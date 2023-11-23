@@ -1,7 +1,9 @@
 import numpy as np
 from scipy.misc import derivative 
 from scipy.stats import norm
+from numba import njit
 
+@njit(cache = True)
 def BS(isCall, logmoneyness, K, r, T, sig):
     F = K / np.exp(logmoneyness)
     d1 = (logmoneyness + (sig**2/2)*T)/(sig*np.sqrt(T))
@@ -11,6 +13,7 @@ def BS(isCall, logmoneyness, K, r, T, sig):
     else:
         return (K*norm.cdf(-d2) - F*norm.cdf(-d1))*np.exp(-r*T)
     
+@njit(cache = True)
 def bisection_imp_vol(logmoneyness, K, r, T, prc, tol = 1e-20):
     isCall = True if logmoneyness < 0 else False
     sig_l, sig_r = 0, 1
