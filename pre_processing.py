@@ -60,7 +60,8 @@ if __name__ == '__main__':
             'maturity': put.maturity.tolist()[:n_put],
             'moneyness': put.strike.tolist()[:n_put] / underlying,
             'price': put.mid.tolist()[:n_put], 
-            'strike': put.strike.tolist()[:n_put]
+            'strike': put.strike.tolist()[:n_put],
+            'type': ['P'] * n_put
         })
         df = pd.concat([df, puts], axis=0)
 
@@ -68,7 +69,8 @@ if __name__ == '__main__':
             'maturity': call.maturity.tolist()[-n_call:],
             'moneyness': call.strike.tolist()[-n_call:] / underlying,
             'price': call.mid.tolist()[-n_call:], 
-            'strike': call.strike.tolist()[-n_call:]
+            'strike': call.strike.tolist()[-n_call:],
+            'type': ['C'] * n_call
         })
         df = pd.concat([df, calls], axis=0)
 
