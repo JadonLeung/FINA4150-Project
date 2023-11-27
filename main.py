@@ -26,8 +26,6 @@ if __name__ == '__main__':
                 lvs.append(0.0)
             else:
                 lvs.append(lv)
-        index = np.nonzero(lvs)
-        lvs = np.take(lvs, index)
         start, end = np.nonzero(lvs)[0][0], np.nonzero(lvs)[0][-1] + 1
         if len(lvs[start:end]) <= 3:
             continue
@@ -37,6 +35,6 @@ if __name__ == '__main__':
         curve = vol_curve(np.sqrt(lvs[start:end]), temp_df.strike[start:end], temp_df.forward[start:end], np.sqrt(atm_vol), maturity, kappa)
         curve.fit()
         strikes = np.linspace(1000, 5000, 100)
-        plt.plot(strikes, curve.get(strikes))
+        plt.plot(strikes, curve.get_vol(strikes))
         curves.append(curve)
     surface = vol_surface(curves)
