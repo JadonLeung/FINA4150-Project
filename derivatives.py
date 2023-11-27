@@ -5,15 +5,16 @@ from numba import njit
 
 def BS(isCall, logmoneyness, K, r, T, sig):
     F = K / np.exp(logmoneyness)
-    d1 = (logmoneyness + (sig**2/2)*T)/(sig*np.sqrt(T))
-    d2 = d1 - sig*np.sqrt(T)
+    vsqrtT = sig * np.sqrt(T)
+    d1 = (-logmoneyness + (sig * sig / 2) * T) / vsqrtT
+    d2 = d1 - vsqrtT
     if isCall:
         return (F*norm.cdf(d1) - K*norm.cdf(d2))*np.exp(-r*T)
     else:
         return (K*norm.cdf(-d2) - F*norm.cdf(-d1))*np.exp(-r*T)
     
-def bisection_imp_vol(logmoneyness, K, r, T, prc, tol = 1e-10):
-    isCall = True if logmoneyness < 0 else False
+def bisection_imp_vol(logmoneyness, K, r, T, prc, tol = 1e-12):
+    isCall = True if logmoneyness > 0 else False
     sig_l, sig_r = 0, 100
     delta_temp = 1
     while (abs(delta_temp) > tol):
@@ -30,7 +31,7 @@ def partial_derivative(func, var=0, degree=1, point=[]):
     def wraps(x):
         args[var] = x
         return func(*args)
-    return derivative(wraps, point[var], dx = 1e-6, n = degree)
+    return derivative(wraps, point[var], dx = 1e-12, n = degree)
 
 def forward(c, p, K, r, T):
     return (c - p) * np.exp(r*T) + K
