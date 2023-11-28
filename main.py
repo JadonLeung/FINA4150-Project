@@ -2,15 +2,18 @@ import pandas as pd
 from derivatives import bisection_imp_vol, local_vol
 import numpy as np
 from vol_surface import vol_curve, vol_surface
+from simulation import MC
 from matplotlib import pyplot as plt
 
 
 APR = 3.41 / 100
 r = np.log(1 + APR)
 kappa = 5
+FP_test = np.arange(1500, 1950, 50)  # things to solve
+# np.random.seed(4150)
 
 if __name__ == '__main__':
-    df = pd.read_csv('/Users/jleung/workspace/FINA4150-Project/cleaned_data.csv')
+    df = pd.read_csv('cleaned_data.csv')
     unique_maturity = sorted(pd.unique(df.maturity))
     curves = []
     for maturity in unique_maturity:
@@ -38,3 +41,9 @@ if __name__ == '__main__':
         plt.plot(strikes, curve.get_vol_list(strikes))
         curves.append(curve)
     surface = vol_surface(curves)
+
+    for FP in FP_test:
+        payoff = MC(FP=FP, r=r, vol_surface=surface)
+        print("FP: ", FP, "    payoff:", payoff)
+    # payoff = MC(FP=, r=r, vol_surface=surface)
+    # print(payoff)
