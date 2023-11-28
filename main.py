@@ -35,6 +35,6 @@ if __name__ == '__main__':
         curve = vol_curve(np.sqrt(lvs[start:end]), temp_df.strike[start:end], temp_df.forward[start:end], np.sqrt(atm_vol), maturity, kappa)
         curve.fit()
         strikes = np.linspace(1000, 5000, 100)
-        plt.plot(strikes, curve.get_vol(strikes))
+        plt.plot(strikes, curve.get_vol_list(strikes))
         curves.append(curve)
     surface = vol_surface(curves)
