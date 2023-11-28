@@ -42,6 +42,37 @@ if __name__ == '__main__':
         curves.append(curve)
     surface = vol_surface(curves)
 
+    from matplotlib import cm
+    from matplotlib.ticker import LinearLocator
+
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+
+    maturitys = np.linspace(0, 1, 100)
+    X, Y = np.meshgrid(strikes,maturitys)
+
+    Z =[]
+    surface = vol_surface(curves)
+    for i in range(100):
+        temp = []
+        for x, y in zip(X[i], Y[i]):
+            temp.append(surface.get_vol(x, y))
+        Z.append(temp)
+
+    # Plot the surface.
+    surf = ax.plot_surface(X, Y, np.array(Z), cmap=cm.coolwarm,
+                        linewidth=0, antialiased=False)
+
+    # Customize the z axis.
+    ax.set_zlim(-2, 2)
+    ax.zaxis.set_major_locator(LinearLocator(10))
+    # A StrMethodFormatter is used automatically
+    ax.zaxis.set_major_formatter('{x:.02f}')
+
+    # Add a color bar which maps values to colors.
+    fig.colorbar(surf, shrink=0.5, aspect=5)
+
+    plt.show()
+
     for FP in FP_test:
         payoff = MC(FP=FP, r=r, vol_surface=surface)
         print("FP: ", FP, "    payoff:", payoff)

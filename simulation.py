@@ -3,7 +3,7 @@ from vol_surface import vol_surface
 
 
 np.random.seed(4150)
-n_steps = 365 * 0.25
+n_steps = 90
 n_paths = 3000
 paths = np.random.standard_normal((int(n_paths), int(n_steps)))
 
@@ -18,7 +18,7 @@ def MC(FP, r, vol_surface, Z=paths, T=0.25, dt=0.25/n_steps):
         Ft_path = []
         current_spot = F0
         for step in range(len(path)):
-            local_vol = vol_surface.get_vol(strike=current_spot, t=step/365)
+            local_vol = vol_surface.get_vol(strike = current_spot, t = step * dt)
             current_spot = current_spot * np.exp((r - (local_vol ** 2) / 2) * dt + local_vol * path[step] * np.sqrt(dt))
             Ft_path.append(current_spot)
         Ft.append(Ft_path)
