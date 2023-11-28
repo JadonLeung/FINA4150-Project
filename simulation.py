@@ -3,12 +3,13 @@ from vol_surface import vol_surface
 
 
 np.random.seed(4150)
-n_steps = 90
+n_steps = 0.25 * 365
 n_paths = 3000
 paths = np.random.standard_normal((int(n_paths), int(n_steps)))
+dt=0.25/n_steps
+F0 = 2000
 
-
-def MC(FP, r, vol_surface, Z=paths, T=0.25, dt=0.25/n_steps):
+def MC(FP, r, vol_surface, Z=paths, T=0.25, dt=dt):
     F0 = 2000
     # local_vol2_list = [(vol**2)/2 for vol in local_vol_list]
     # Ft = np.array(F0*np.cumprod(np.exp((r-(local_vol2_list))*dt+local_vol_list*Z*np.sqrt(dt)), axis=1))

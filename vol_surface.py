@@ -39,6 +39,13 @@ class vol_curve:
         vol = vol if vol > 0 else 0
         return vol 
     
+    def get_vol_by_M(self, M: float):
+        logM = np.log(M)
+        x = (np.tanh(self.kappa * logM) / self.kappa)
+        vol = np.sqrt(self.sigmaATM * self.sigmaATM + self.delta * x  + self.gamma * x * x / 2)
+        vol = vol if vol > 0 else 0
+        return vol 
+    
     def get_vol_list(self, K: list):
         logM = np.log(np.array(K / self.F[0]))
         x = (np.tanh(self.kappa * logM) / self.kappa)
@@ -55,6 +62,15 @@ class vol_surface:
         maturities = []
         for curve in self.curves:
             vols.append(curve.get_vol(strike))
+            maturities.append(curve.maturity)
+        CS = CubicSpline(np.array(maturities), np.array(vols))
+        return float(CS(t))
+    
+    def get_vol_by_M(self, M, t):
+        vols = []
+        maturities = []
+        for curve in self.curves:
+            vols.append(curve.get_vol_by_M(M))
             maturities.append(curve.maturity)
         CS = CubicSpline(np.array(maturities), np.array(vols))
         return float(CS(t))

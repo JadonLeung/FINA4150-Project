@@ -6,7 +6,7 @@ from simulation import MC
 from matplotlib import pyplot as plt
 
 
-APR = 3.41 / 100
+APR = 3.32 / 100
 r = np.log(1 + APR)
 kappa = 5
 FP_test = np.arange(1500, 1950, 50)  # things to solve
@@ -47,15 +47,16 @@ if __name__ == '__main__':
 
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
+    moneyness = np.linspace(0.5, 1.5, 100)
     maturitys = np.linspace(0, 1, 100)
-    X, Y = np.meshgrid(strikes,maturitys)
+    X, Y = np.meshgrid(moneyness,maturitys)
 
     Z =[]
     surface = vol_surface(curves)
     for i in range(100):
         temp = []
         for x, y in zip(X[i], Y[i]):
-            temp.append(surface.get_vol(x, y))
+            temp.append(surface.get_vol_by_M(x, y))
         Z.append(temp)
 
     # Plot the surface.
@@ -63,13 +64,14 @@ if __name__ == '__main__':
                         linewidth=0, antialiased=False)
 
     # Customize the z axis.
-    ax.set_zlim(-2, 2)
+    ax.set_zlim(-1, 10)
     ax.zaxis.set_major_locator(LinearLocator(10))
+    ax.set_xlabel('Moneyness')
+    ax.set_ylabel('T')
+    ax.set_zlabel('$\sigma$')
+    ax.set_title('Local Volatility Surface')
     # A StrMethodFormatter is used automatically
     ax.zaxis.set_major_formatter('{x:.02f}')
-
-    # Add a color bar which maps values to colors.
-    fig.colorbar(surf, shrink=0.5, aspect=5)
 
     plt.show()
 
